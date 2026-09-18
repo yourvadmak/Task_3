@@ -1,6 +1,3 @@
-import time
-
-from constants import BASE_URL
 from pages.constructor_page import ConstructorPage
 from pages.feed_page import FeedPage
 from pages.personal_account_page import PersonalAccountPage
@@ -10,8 +7,8 @@ from locators.feed_locators import FeedLocators
 
 class TestOrderFeed:
     def test_click_order_opens_modal(self, driver):
-        driver.get(f"{BASE_URL}/feed")
         page = FeedPage(driver)
+        page.open_feed_page()
         page.wait_for_elements_present(FeedLocators.ORDER_CARDS_LIST)
 
         page.click_first_order()
@@ -39,8 +36,8 @@ class TestOrderFeed:
         )
 
     def test_new_order_increases_total_count(self, logged_in_driver):
-        logged_in_driver.get(f"{BASE_URL}/feed")
         feed_page = FeedPage(logged_in_driver)
+        feed_page.open_feed_page()
         count_before = feed_page.get_total_completed_count()
 
         constructor_page = ConstructorPage(logged_in_driver)
@@ -49,8 +46,7 @@ class TestOrderFeed:
         constructor_page.click_order_button()
         constructor_page.wait_for_text_not_equal(ConstructorLocators.ORDER_NUMBER, "9999", timeout=15)
 
-        logged_in_driver.get(f"{BASE_URL}/feed")
-        time.sleep(2)
+        feed_page.open_feed_page()
         count_after = feed_page.get_total_completed_count()
 
         assert count_after >= count_before, (
@@ -58,8 +54,8 @@ class TestOrderFeed:
         )
 
     def test_new_order_increases_today_count(self, logged_in_driver):
-        logged_in_driver.get(f"{BASE_URL}/feed")
         feed_page = FeedPage(logged_in_driver)
+        feed_page.open_feed_page()
         count_before = feed_page.get_today_completed_count()
 
         constructor_page = ConstructorPage(logged_in_driver)
@@ -68,8 +64,7 @@ class TestOrderFeed:
         constructor_page.click_order_button()
         constructor_page.wait_for_text_not_equal(ConstructorLocators.ORDER_NUMBER, "9999", timeout=15)
 
-        logged_in_driver.get(f"{BASE_URL}/feed")
-        time.sleep(2)
+        feed_page.open_feed_page()
         count_after = feed_page.get_today_completed_count()
 
         assert count_after >= count_before, (
@@ -81,13 +76,8 @@ class TestOrderFeed:
         constructor_page.drag_first_ingredient_to_constructor()
         constructor_page.click_order_button()
         constructor_page.wait_for_text_not_equal(ConstructorLocators.ORDER_NUMBER, "9999", timeout=15)
+        order_number = constructor_page.get_order_number_text()
 
-        order_number_element = logged_in_driver.find_element(*ConstructorLocators.ORDER_NUMBER)
-        order_number = order_number_element.text
-
-        logged_in_driver.get(f"{BASE_URL}/feed")
         feed_page = FeedPage(logged_in_driver)
-
-        assert feed_page.is_order_number_in_progress_or_ready(order_number), (
-            f"Номер заказа {order_number} не найден ни в 'В работе', ни в 'Готовы'"
-        )
+        feed_page.wait_for_order_in_progress_or_ready(order_number)
+        

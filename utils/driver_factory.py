@@ -2,8 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.chrome import ChromeDriverManager
-
-GECKODRIVER_PATH = "/Users/vadmin/.wdm/drivers/geckodriver/mac64/v0.37.1/geckodriver"
+from webdriver_manager.firefox import GeckoDriverManager
 
 
 class WebDriverFactory:
@@ -13,7 +12,7 @@ class WebDriverFactory:
             service = ChromeService(ChromeDriverManager().install())
             return webdriver.Chrome(service=service)
         elif browser_name == "firefox":
-            service = FirefoxService(GECKODRIVER_PATH)
+            service = FirefoxService(GeckoDriverManager().install())
             return webdriver.Firefox(service=service)
         else:
             raise ValueError(f"Unsupported browser: {browser_name}")

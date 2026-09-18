@@ -1,12 +1,11 @@
-from constants import BASE_URL
 from pages.password_recovery_page import PasswordRecoveryPage
 from locators.password_recovery_locators import PasswordRecoveryLocators as Locators
 
 
 class TestPasswordRecovery:
     def test_navigate_to_password_recovery_page(self, driver):
-        driver.get(f"{BASE_URL}/login")
         page = PasswordRecoveryPage(driver)
+        page.open_login_page()
 
         page.click_restore_password_link()
 
@@ -15,8 +14,8 @@ class TestPasswordRecovery:
         )
 
     def test_enter_email_and_click_restore(self, driver):
-        driver.get(f"{BASE_URL}/forgot-password")
         page = PasswordRecoveryPage(driver)
+        page.open_forgot_password_page()
 
         page.enter_email("test@example.com")
         page.click_restore_button()
@@ -26,8 +25,8 @@ class TestPasswordRecovery:
         )
 
     def test_show_password_icon_activates_field(self, driver):
-        driver.get(f"{BASE_URL}/forgot-password")
         page = PasswordRecoveryPage(driver)
+        page.open_forgot_password_page()
         page.enter_email("test@example.com")
         page.click_restore_button()
 

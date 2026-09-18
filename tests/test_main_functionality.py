@@ -1,22 +1,21 @@
-from constants import BASE_URL
 from pages.constructor_page import ConstructorPage
 
 
 class TestMainFunctionality:
     def test_navigate_to_constructor(self, driver):
-        driver.get(BASE_URL)
         page = ConstructorPage(driver)
+        page.open_constructor_page()
         page.click_feed_link()
 
         page.click_constructor_link()
 
-        assert page.wait_for_url_contains(BASE_URL) or "/feed" not in page.get_current_url(), (
+        assert "/feed" not in page.get_current_url(), (
             "Не произошёл переход в конструктор"
         )
 
     def test_navigate_to_feed(self, driver):
-        driver.get(BASE_URL)
         page = ConstructorPage(driver)
+        page.open_constructor_page()
 
         page.click_feed_link()
 
@@ -25,8 +24,8 @@ class TestMainFunctionality:
         )
 
     def test_ingredient_modal_opens_and_closes(self, driver):
-        driver.get(BASE_URL)
         page = ConstructorPage(driver)
+        page.open_constructor_page()
 
         page.click_first_ingredient()
         assert page.is_ingredient_modal_opened(), (
@@ -39,8 +38,8 @@ class TestMainFunctionality:
         )
 
     def test_adding_ingredient_increases_counter(self, driver):
-        driver.get(BASE_URL)
         page = ConstructorPage(driver)
+        page.open_constructor_page()
         counter_before = page.get_first_ingredient_counter()
 
         page.drag_first_ingredient_to_constructor()
